@@ -67,14 +67,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_restore).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ivOrange.setImageBitmap(bmPurple);
+                ivOrange.setImageBitmap(bmOrange);
             }
         });
 
         findViewById(R.id.btn_crop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ivOrange.setImageBitmap(clipPath(bmOrange, screenWidth/ratio));
+                ivOrange.setImageBitmap(circleBitmap(bmOrange, screenWidth/ratio));
                 //ivOrange.setImageBitmap(cropBitmapInCircleWay(bmOrange,screenWidth/ratio));
                 ratio ++;
             }
@@ -132,7 +132,21 @@ public class MainActivity extends AppCompatActivity {
      *  不断扩大半径
      */
 
+    private Bitmap circleBitmap(Bitmap o,float radius){
+        Bitmap outputBm = Bitmap.createBitmap(o.getWidth(),o.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(outputBm);
+        final Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
+        paint.setDither(true);
 
+        final Rect rect = new Rect(0,0,o.getWidth(),o.getHeight());
+        canvas.drawARGB(0,0,0,0);
+        canvas.drawCircle(0,0,o.getHeight(),paint );
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(o,rect,rect,paint);
+        return outputBm;
+    }
 
     private Bitmap cropBitmapInCircleWay(Bitmap o,float radius){
         if(o == null){

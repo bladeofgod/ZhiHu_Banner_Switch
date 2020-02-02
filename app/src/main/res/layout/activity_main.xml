@@ -19,10 +19,15 @@
             android:background="@color/color_yellow"
             android:textColor="@color/color_red"
             android:layout_width="match_parent"
-            android:layout_height="600dp"/>
+            android:layout_height="400dp"/>
         <Button
             android:id="@+id/btn_crop"
             android:text="crop"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+        <Button
+            android:id="@+id/btn_restore"
+            android:text="restore"
             android:layout_width="match_parent"
             android:layout_height="50dp"/>
         <RelativeLayout
@@ -30,12 +35,14 @@
             android:layout_height="100dp">
             <ImageView
                 android:id="@+id/iv_purple"
-                android:src="@color/color_purple"
+                android:src="@drawable/bg_1"
+                android:scaleType="fitXY"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
             <ImageView
                 android:id="@+id/iv_orange"
-                android:src="@color/color_orange"
+                android:src="@drawable/bg_2"
+                android:scaleType="fitXY"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </RelativeLayout>
@@ -46,7 +53,7 @@
             android:gravity="center"
             android:textColor="@color/color_green_light"
             android:layout_width="match_parent"
-            android:layout_height="600dp"/>
+            android:layout_height="400dp"/>
 
 
     </LinearLayout>

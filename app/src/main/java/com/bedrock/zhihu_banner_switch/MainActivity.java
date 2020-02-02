@@ -6,10 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -48,22 +50,32 @@ public class MainActivity extends AppCompatActivity {
         ivOrange = findViewById(R.id.iv_orange);
         ivPurple = findViewById(R.id.iv_purple);
 
-        ivPurple.setDrawingCacheEnabled(true);
-        ivOrange.setDrawingCacheEnabled(true);
-
-        bmPurple = ivPurple.getDrawingCache();
-        bmOrange = ivOrange.getDrawingCache();
-
-        ivPurple.setDrawingCacheEnabled(false);
-        ivOrange.setDrawingCacheEnabled(false);
+//        ivPurple.setDrawingCacheEnabled(true);
+//        ivOrange.setDrawingCacheEnabled(true);
+//
+//        bmPurple = ivPurple.getDrawingCache();
+//        bmOrange = ivOrange.getDrawingCache();
+//
+//        ivPurple.setDrawingCacheEnabled(false);
+//        ivOrange.setDrawingCacheEnabled(false);
+        bmPurple = ((BitmapDrawable)ivPurple.getDrawable()).getBitmap();
+        bmOrange = ((BitmapDrawable)ivOrange.getDrawable()).getBitmap();
 
 
         scrollView = findViewById(R.id.scroll_view);
 
+        findViewById(R.id.btn_restore).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ivOrange.setImageBitmap(bmPurple);
+            }
+        });
+
         findViewById(R.id.btn_crop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ivOrange.setImageBitmap(cropBitmapInCircleWay(bmOrange,screenWidth/ratio));
+                ivOrange.setImageBitmap(clipPath(bmOrange, screenWidth/ratio));
+                //ivOrange.setImageBitmap(cropBitmapInCircleWay(bmOrange,screenWidth/ratio));
                 ratio ++;
             }
         });
@@ -93,18 +105,41 @@ public class MainActivity extends AppCompatActivity {
     //只需要裁剪上层 也就是 iv orange
     //
 
+    private Bitmap clipPath(Bitmap o,float radius){
+        if(o == null){
+            return null;
+        }
+        Bitmap origin = Bitmap.createBitmap(o).copy(Bitmap.Config.RGB_565,true);
+
+        Paint paint = new Paint();
+        Canvas canvas = new Canvas(origin);
+        canvas.save();
+        Path path = new Path();
+        path.moveTo(0,0);
+        path.addCircle(0,0,200, Path.Direction.CW);
+        canvas.clipPath(path);
+        canvas.drawBitmap(origin, 0,0,paint);
+        canvas.restore();
+        return origin;
+
+    }
+
     /**
-     * @param origin 待裁剪
+     * @param o 待裁剪
      * @param radius 圆形半径
      *
      *  从原图（矩形）左上角开始为圆心，进行裁剪，
      *  不断扩大半径
      */
 
-    private Bitmap cropBitmapInCircleWay(Bitmap origin,float radius){
-        if(origin == null){
+
+
+    private Bitmap cropBitmapInCircleWay(Bitmap o,float radius){
+        if(o == null){
             return null;
         }
+
+        Bitmap origin = Bitmap.createBitmap(o);
 
         //创建一个原图 备份
         Bitmap circleBitmap = Bitmap.createBitmap(origin.getWidth(), origin.getHeight(),
@@ -119,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
             paint.setAntiAlias(true);
             //设置画布模式
-            canvas.drawARGB(0,0,0,0);
+            //canvas.drawARGB(0,0,0,0);
             paint.setColor(Color.WHITE);
             canvas.drawRoundRect(rectF, radius, radius, paint);
             //遮罩模式  具体可以参考这个网址

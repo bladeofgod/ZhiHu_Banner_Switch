@@ -20,6 +20,11 @@
             android:textColor="@color/color_red"
             android:layout_width="match_parent"
             android:layout_height="600dp"/>
+        <Button
+            android:id="@+id/btn_crop"
+            android:text="crop"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="100dp">

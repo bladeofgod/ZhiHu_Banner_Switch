@@ -82,8 +82,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private int ratio = 2;
-    private int screenWidth;
+    private float screenWidth;
     private Bitmap bmPurple,bmOrange;
+    private float threshold = 500;
 
     private void initListener(){
         scrollView.setListener(new MyScrollView.onScrollListener() {
@@ -91,11 +92,22 @@ public class MainActivity extends AppCompatActivity {
             public void onScroll(int l, int t, int oldl, int oldt) {
                 Log.i("scrollview",
                         "l : " + l + "   t :" + t + "   oldl :" + oldl+ "  oldt: " + oldt);
+                float curY = (float)t;
+
+                //暂时滚动高度阈值定位500
                 if(t > oldt){
                     //scroll down
                     isScrollUp = false;
+                    float r = curY / threshold ;
+                    Log.i("crop", "ratio :" + r);
+                    Log.i("crop", "radius :" + (r * screenWidth));
+                    ivOrange.setImageBitmap(circleBitmap(bmOrange, r * screenWidth));
                 }else{
                     isScrollUp = true;
+                    float r = curY / threshold ;
+                    Log.i("crop", "ratio :" + r);
+                    Log.i("crop", "radius :" + (r * screenWidth));
+                    ivOrange.setImageBitmap(circleBitmap(bmOrange, r * screenWidth));
                 }
 
             }
@@ -133,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
      */
 
     private Bitmap circleBitmap(Bitmap o,float radius){
+        //Log.i("crop", "radius :" + radius);
         Bitmap outputBm = Bitmap.createBitmap(o.getWidth(),o.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(outputBm);
         final Paint paint = new Paint();
@@ -142,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
         final Rect rect = new Rect(0,0,o.getWidth(),o.getHeight());
         canvas.drawARGB(0,0,0,0);
-        canvas.drawCircle(0,0,o.getHeight(),paint );
+        canvas.drawCircle(0,0,radius,paint );
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(o,rect,rect,paint);
         return outputBm;
